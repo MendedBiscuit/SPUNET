@@ -1,19 +1,19 @@
 import os
 import torch
 
-from unet_pytorch.train import UNetTrainer
-from unet_pytorch.data import Channel_Conv
+from the_spunet.train import UNetTrainer
+from the_spunet.data import Channel_Conv
 
 
-total_cores = os.cpu_count()
+# total_cores = os.cpu_count()
 
-torch.set_num_threads(total_cores - 4)
-torch.set_num_interop_threads(total_cores - 4)
+# torch.set_num_threads(total_cores - 4)
+# torch.set_num_interop_threads(total_cores - 4)
 
 INPUTS = "./img/Input"
-MASKS = "./img/Input_Target"
-TARGETS = "./img/Target"    
-CHECKPOINTS = "./Model"  
+MASKS = "./img/Input_Masks"
+TARGETS = "./img/Masks"    
+CHECKPOINTS = "./Checkpoints"  
 
 # Run to convert MASKS to 1 channel
 if not len(os.listdir(TARGETS)):
@@ -26,4 +26,4 @@ trainer = UNetTrainer(
     batch_size=8
 )
 
-trainer.train(epochs=50, save_interval=10)
+trainer.train(epochs=100, save_interval=10)

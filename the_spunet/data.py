@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from skimage import io
 from PIL import Image
 
-from unet_pytorch.utils import im_to_tensor
+from the_spunet.utils import im_to_tensor
 
 
 class SegmentationDataset(Dataset):

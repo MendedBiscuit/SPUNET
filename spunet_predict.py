@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-from unet_pytorch.predict import UNetPredictor
+from the_spunet.predict import UNetPredictor
 
 
-MODEL = "./Model/final_model.pth"
+MODEL = "./Checkpoints/final_model.pth"
 INPUT_PATH = ".img/Predict/Input/"
 FILENAME = "4.tiff"
 

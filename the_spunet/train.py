@@ -7,8 +7,8 @@ import dataclasses
 import torch
 from torch import nn
 
-from unet_pytorch.model import UNet
-from unet_pytorch.data import UNetDataset, UNetDataLoader
+from the_spunet.model import UNet
+from the_spunet.data import UNetDataset, UNetDataLoader
 
 
 @dataclasses.dataclass(init=False)
@@ -21,7 +21,8 @@ class UNetTrainingConfig:
         self.lr = lr
         self.weight_decay = weight_decay
 
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([9.0]))
+
         self.optimiser = torch.optim.AdamW(
             self.model.parameters(), lr=lr, weight_decay=weight_decay
         )
