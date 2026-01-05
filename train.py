@@ -5,8 +5,8 @@ from torch.utils.data import DataLoader
 from model import UNet
 from dataset import SpunetDataset
 
-EPOCHS = 50
-BATCH_SIZE = 8
+EPOCHS = 200
+BATCH_SIZE = 16
 
 TRAIN_IMG = "./img/train/train_img"
 TRAIN_MASK = "./img/train/train_mask"

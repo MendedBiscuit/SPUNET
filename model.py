@@ -24,6 +24,7 @@ class UNet(L.LightningModule):
         self.register_buffer("mean", torch.tensor(params["mean"]).view(1, 3, 1, 1))
 
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
+        
 
         self.training_step_outputs = []
         self.validation_step_outputs = []
