@@ -29,8 +29,8 @@ uv pip install -r requirements.txt
 ## Usage
 
 ### Training
-To train the UNET, run train.py for the desired duration.
+To train the UNET, run `train.py` for the desired duration.
 
 ### Predicting
-Predicting the location of impurities can be done by specifying the location of the test images in predict.py and subsequently running the file.
+Predicting the location of impurities can be done by specifying the location of the test images in `predict.py` and subsequently running the file.
 
