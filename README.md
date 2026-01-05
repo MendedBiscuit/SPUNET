@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="img/logo3.png" alt="SPUNET Logo" width="600">
+  <img src="img/logo.png" alt="SPUNET Logo" width="600">
 
   **UNET model and training data used to used to detect impurities in samples of wood chips.**
 
@@ -28,9 +28,9 @@ uv pip install -r requirements.txt
 
 ## Usage
 
-# Training
+### Training
 To train the UNET, run train.py for the desired duration.
 
-# Predicting
+### Predicting
 Predicting the location of impurities can be done by specifying the location of the test images in predict.py and subsequently running the file.
 
