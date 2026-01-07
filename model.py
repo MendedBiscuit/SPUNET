@@ -26,6 +26,9 @@ class UNet(L.LightningModule):
         self.register_buffer("std", torch.tensor(params["std"]).view(1, 3, 1, 1))
         self.register_buffer("mean", torch.tensor(params["mean"]).view(1, 3, 1, 1))
 
+        self.dice_loss = smp.losses.DiceLoss(mode='binary', from_logits=True)
+        self.focal_loss = smp.losses.FocalLoss(mode='binary')
+
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
 
         self.training_step_outputs = []
@@ -37,14 +40,19 @@ class UNet(L.LightningModule):
     def shared_step(self, batch, stage):
         image, mask = batch
 
+        if mask.ndim == 3:
+            mask = mask.unsqueeze(1)
+        
+        mask = (mask > 0).float()
         logits_mask = self.forward(image)
-        loss = self.loss_fn(logits_mask, mask)
+        loss = self.dice_loss(logits_mask, mask) + self.focal_loss(logits_mask, mask)
+        # loss = self.loss_fn(logits_mask, mask)
 
         prob_mask = logits_mask.sigmoid()
         pred_mask = (prob_mask > 0.5).float()
 
         tp, fp, fn, tn = smp.metrics.get_stats(
-            pred_mask.long(), mask.long().unsqueeze(1), mode="binary"
+            pred_mask.long(), mask.long(), mode="binary"
         )
 
         self.log(f"{stage}_loss", loss, prog_bar=True, on_step=True, on_epoch=True)

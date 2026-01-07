@@ -14,18 +14,32 @@ TRAIN_IMG = "./img/train/train_img"
 TRAIN_MASK = "./img/train/train_mask"
 VAL_IMG = "./img/val/val_img"
 VAL_MASK = "./img/val/val_mask"
-
 TRAIN_TRANSFORM = A.Compose([
+                A.Resize(544, 544),
                 A.HorizontalFlip(p=0.5),
                 A.VerticalFlip(p=0.2),
                 A.RandomRotate90(p=0.5),
                 A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
                 ToTensorV2(),
 ])
+VALID_TRANSFORM = A.Compose([
+                A.Resize(544, 544),
+                A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+                ToTensorV2(),
+])
+
+
+def rename_model_file():
+    version = max([int(x.split("_")[-1]) for x in os.listdir("./lightning_logs/")])
+    directory = f"./lightning_logs/version_{version}/"
+    old = os.path.join(directory, f"epoch={EPOCHS-1}-step={EPOCHS*2}.ckpt")
+    new = os.path.join(directory, "model.ckpt")
+    os.rename(old, new)
+
 
 def main():
-    train_ds = SpunetDataset(TRAIN_IMG, TRAIN_MASK, TRAIN_TRANSFORM)
-    val_ds = SpunetDataset(VAL_IMG, VAL_MASK, TRAIN_TRANSFORM)
+    train_ds = SpunetDataset(TRAIN_IMG, TRAIN_MASK, transform=TRAIN_TRANSFORM)
+    val_ds = SpunetDataset(VAL_IMG, VAL_MASK, transform=VALID_TRANSFORM)
 
     train_loader = DataLoader(
         train_ds, batch_size=BATCH_SIZE, shuffle=True, num_workers=12, pin_memory=True
@@ -45,5 +59,7 @@ def main():
     )
 
     trainer.fit(model, train_dataloaders=train_loader, val_dataloaders=val_loader)
+
+    rename_model_file()
 
 main()
