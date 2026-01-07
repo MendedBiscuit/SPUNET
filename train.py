@@ -4,6 +4,8 @@ import pytorch_lightning as L
 from torch.utils.data import DataLoader
 from model import UNet
 from dataset import SpunetDataset
+import albumentations as A 
+from albumentations.pytorch import ToTensorV2
 
 EPOCHS = 256
 BATCH_SIZE = 32
@@ -32,7 +34,7 @@ def main():
         val_ds, batch_size=BATCH_SIZE, shuffle=True, num_workers=8, pin_memory=True
     )
 
-    model = UNet(encoder_name="resnet34", in_channels=4, classes=1, t_max=EPOCHS)
+    model = UNet(encoder_name="resnet34", in_channels=3, classes=1, t_max=EPOCHS)
 
     trainer = L.Trainer(
         max_epochs=EPOCHS,

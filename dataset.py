@@ -2,17 +2,14 @@ import os
 import cv2
 import torch
 import numpy as np
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
+# import albumentations as A
+# from albumentations.pytorch import ToTensorV2
 from torch.utils.data import Dataset
 from torchvision import transforms
 
 
 class SpunetDataset(Dataset):
-    def __init__(self, image_dir, mask_dir, transform=transforms.Compose([
-                                                    transforms.RandomHorizontalFlip(),
-                                                    transforms.ToTensor(),              
-])):
+    def __init__(self, image_dir, mask_dir, transform=None):
         self.image_dir = image_dir
         self.mask_dir = mask_dir
         self.images = sorted(os.listdir(image_dir))

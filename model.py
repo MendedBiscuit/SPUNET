@@ -23,8 +23,8 @@ class UNet(L.LightningModule):
 
         params = smp.encoders.get_preprocessing_params(encoder_name)
 
-        self.register_buffer("std", torch.tensor(params["std"]).view(1, 4, 1, 1))
-        self.register_buffer("mean", torch.tensor(params["mean"]).view(1, 4, 1, 1))
+        self.register_buffer("std", torch.tensor(params["std"]).view(1, 3, 1, 1))
+        self.register_buffer("mean", torch.tensor(params["mean"]).view(1, 3, 1, 1))
 
         self.loss_fn = smp.losses.DiceLoss(smp.losses.BINARY_MODE, from_logits=True)
 
@@ -32,9 +32,9 @@ class UNet(L.LightningModule):
         self.validation_step_outputs = []
 
     def forward(self, image):
-        normalized_image = (image[:, :4, :, :] - self.mean) / self.std
+        normalized_image = (image[:, :3, :, :] - self.mean) / self.std
         return self.model(normalized_image)
-
+    
     def shared_step(self, batch, stage):
         image, mask = batch
 
@@ -45,7 +45,7 @@ class UNet(L.LightningModule):
         pred_mask = (prob_mask > 0.5).float()
 
         tp, fp, fn, tn = smp.metrics.get_stats(
-            pred_mask.to(torch.int64), mask.to(torch.int64), mode="binary"
+            pred_mask.long().squeeze(1), mask.long(), mode="binary"
         )
 
         self.log(f"{stage}_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
