@@ -12,7 +12,7 @@ lightning_logs/
 .ruff_cache/
 # C extensions
 *.so
-
+output_temp/
 # Distribution / packaging
 .Python
 build/
