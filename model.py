@@ -32,8 +32,7 @@ class UNet(L.LightningModule):
         self.validation_step_outputs = []
 
     def forward(self, image):
-        normalized_image = (image[:, :3, :, :] - self.mean) / self.std
-        return self.model(normalized_image)
+        return self.model(image)
     
     def shared_step(self, batch, stage):
         image, mask = batch
@@ -45,7 +44,7 @@ class UNet(L.LightningModule):
         pred_mask = (prob_mask > 0.5).float()
 
         tp, fp, fn, tn = smp.metrics.get_stats(
-            pred_mask.long().squeeze(1), mask.long(), mode="binary"
+            pred_mask.long(), mask.long().unsqueeze(1), mode="binary"
         )
 
         self.log(f"{stage}_loss", loss, prog_bar=True, on_step=True, on_epoch=True)
