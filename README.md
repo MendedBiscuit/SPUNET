@@ -3,7 +3,6 @@
 
   **UNET model and training data used to used to detect impurities in samples of wood chips.**
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 </div>
 

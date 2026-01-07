@@ -9,7 +9,7 @@ __pycache__/
 
 null/
 lightning_logs/
-
+.ruff_cache/
 # C extensions
 *.so
 
