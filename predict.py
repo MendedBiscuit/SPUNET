@@ -7,11 +7,13 @@ from torch.utils.data import DataLoader
 from dataset import SpunetDataset
 from model import UNet
 
-CHECKPOINT = "lightning_logs/version_4/checkpoints/model.ckpt"
+# Parameters for predicting
+
+CHECKPOINT = "lightning_logs/version_5/checkpoints/model.ckpt"
 DATA = "./img/train/train_img"
 MASK = "./img/train/train_mask"
 OUTPUT = "./output/"
-NUM_PREDS = 15
+NUM_PREDS = 15 # Specify number of output images
 PREDICT_TRANSFORM = A.Compose([
     A.Resize(544, 544),
     A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
@@ -19,11 +21,23 @@ PREDICT_TRANSFORM = A.Compose([
 ])
 
 def predict_and_visualize(visualise=False, save_img=False):
+    """
+    Visualise or save prediction images to drive 
+
+    -- Parameters --
+    visualise: bool, set to True for visualisation
+    save_img: bool, set to True for output
+    -- Returns --
+    None        
+    """
+
+    # Load model
     model = UNet.load_from_checkpoint(CHECKPOINT)
     model.eval()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
+    # Prepare and Load DATA and MASK
     test_dataset = SpunetDataset(DATA, MASK, transform=PREDICT_TRANSFORM)
     test_dataloader = DataLoader(test_dataset, batch_size=NUM_PREDS, shuffle=False)
 
@@ -32,10 +46,12 @@ def predict_and_visualize(visualise=False, save_img=False):
 
     with torch.no_grad():
         logits = model(images.to(device))
+        # Toggle either line for binary image or probability map
         pr_masks = (logits.sigmoid() > 0.5).float()
         # pr_masks = logits.sigmoid()
 
     if visualise:
+        # Generate visualisation with Image, Ground Truth and Prediction
         for idx in range(min(len(images), NUM_PREDS)):
             plt.figure(figsize=(15, 5))
 
@@ -63,6 +79,7 @@ def predict_and_visualize(visualise=False, save_img=False):
             plt.show()
     
     if save_img:
+        # Save prediction to OUTPUT as 544x544px
         px = 1/plt.rcParams['figure.dpi']
         fig = plt.figure(figsize=(544*px, 544*px), frameon=False)
 
